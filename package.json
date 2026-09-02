@@ -1,0 +1,13 @@
+{
+  "name": "terragrav",
+  "version": "1.0.0",
+  "description": "TERRAGRAV - 2.5D Mobile Multiplayer Arena",
+  "main": "index.html",
+  "scripts": {
+    "start": "node server.js",
+    "build": "echo 'Build successful'"
+  },
+  "keywords": ["game", "2.5d", "paperio", "multiplayer", "unity"],
+  "author": "Antigravity",
+  "license": "MIT"
+}
