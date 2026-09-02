@@ -1,0 +1,371 @@
+:root {
+  --bg-sky: #58a5f0;
+  --text-main: #ffffff;
+  --font-main: 'Outfit', 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: radial-gradient(circle at center, #72b6f6 0%, #3b82f6 100%);
+  font-family: var(--font-main);
+  color: var(--text-main);
+}
+
+#game-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#game-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ==========================================================================
+   2.5D Mobile In-Game HUD (Exact Replica of Reference)
+   ========================================================================== */
+.hud-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 20;
+}
+
+/* 1. Top Left: Menu Button & Ping Badge */
+.hud-top-left-group {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  pointer-events: auto;
+}
+
+.hud-icon-btn {
+  width: 42px;
+  height: 42px;
+  background: #182335;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+  transition: transform 0.1s ease;
+}
+
+.hud-icon-btn:hover {
+  transform: scale(1.05);
+}
+
+.hud-ping-badge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: #182335;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  border-radius: 10px;
+  padding: 6px 12px;
+  font-weight: 800;
+  font-size: 0.88rem;
+  color: #00e676; /* Bright fluorescent green */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+.ping-icon {
+  font-size: 0.95rem;
+}
+
+/* 2. Top Center: Capsule Match Timer */
+.hud-top-center {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: auto;
+}
+
+.hud-timer-capsule {
+  background: #182335;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-radius: 16px;
+  padding: 6px 26px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+}
+
+.timer-digits {
+  font-size: 1.45rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+/* 3. Top Right: 8-Player Leaderboard Table (Exact Match) */
+.hud-top-right {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  pointer-events: auto;
+}
+
+.hud-leaderboard-card {
+  width: 175px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.leaderboard-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.lead-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 3px 6px 3px 4px;
+  border-radius: 6px;
+  color: #ffffff;
+  font-size: 0.8rem;
+  font-weight: 800;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.lead-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lead-rank-badge {
+  width: 18px;
+  height: 18px;
+  background: #ffffff;
+  color: #111827;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.lead-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 68px;
+  font-weight: 800;
+}
+
+.lead-right {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.lead-pct {
+  font-weight: 900;
+  font-size: 0.8rem;
+}
+
+.lead-crown {
+  font-size: 0.85rem;
+}
+
+.lead-row.is-local {
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
+}
+
+/* 4. Bottom Center: MY TERRITORY Status Card */
+.hud-bottom-center {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: auto;
+}
+
+.hud-territory-card {
+  background: #182335;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 18px;
+  padding: 6px 28px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+
+.territory-card-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.my-color-swatch {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  background-color: #1a73e8;
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.territory-labels {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0px;
+}
+
+.territory-title {
+  font-size: 0.62rem;
+  font-weight: 900;
+  color: #60a5fa;
+  letter-spacing: 1px;
+}
+
+.territory-pct {
+  font-size: 1.45rem;
+  font-weight: 900;
+  color: #ffffff;
+  line-height: 1.1;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+/* 5. Bottom Left: Virtual Joystick (Exact Reference Double Ring) */
+/* 6. Bottom Right: Golden Lightning Boost Button */
+.hud-bottom-right-group {
+  position: absolute;
+  bottom: 18px;
+  right: 18px;
+  display: flex;
+  align-items: center;
+  pointer-events: auto;
+}
+
+/* Big Golden Circular Lightning Boost Action Button */
+.hud-boost-btn {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.hud-boost-btn:hover {
+  transform: scale(1.08);
+}
+
+.hud-boost-btn:active {
+  transform: scale(0.95);
+}
+
+.boost-progress-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.boost-bg-ring {
+  fill: none;
+  stroke: rgba(15, 23, 42, 0.7);
+  stroke-width: 8;
+}
+
+.boost-fill-ring {
+  fill: none;
+  stroke: #ffb300;
+  stroke-width: 8;
+  stroke-linecap: round;
+  stroke-dasharray: 276.46;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.1s linear;
+  filter: drop-shadow(0 0 8px rgba(255, 179, 0, 0.8));
+}
+
+.boost-btn-inner {
+  width: 74px;
+  height: 74px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+  border: 3px solid #ffb300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5), inset 0 0 12px rgba(255, 179, 0, 0.4);
+}
+
+/* Floating Feedback Popups */
+.floating-feedback-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.float-text {
+  position: absolute;
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: #ffffff;
+  -webkit-text-stroke: 4px #0f172a;
+  text-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
+  animation: popFloat 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+@keyframes popFloat {
+  0% { transform: translate(-50%, 0) scale(0.5); opacity: 0; }
+  20% { transform: translate(-50%, -20px) scale(1.2); opacity: 1; }
+  80% { transform: translate(-50%, -50px) scale(1); opacity: 1; }
+  100% { transform: translate(-50%, -80px) scale(0.9); opacity: 0; }
+}
+
+.screen-overlay.hidden,
+.skin-modal.hidden,
+.hud-overlay.hidden {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+}

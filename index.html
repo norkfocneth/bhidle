@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>TERRAGRAV - 2.5D Mobile Arena</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;800;900&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div id="game-container">
+    <canvas id="game-canvas"></canvas>
+
+    <!-- In-Game 2.5D Mobile HUD (Exact Reference Match) -->
+    <div id="hud" class="hud-overlay">
+      
+      <!-- Top Left: Menu Button & Connection Ping -->
+      <div class="hud-top-left-group">
+        <button id="hud-menu-btn" class="hud-icon-btn menu-btn" aria-label="Menu">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="#ffffff">
+            <path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/>
+          </svg>
+        </button>
+        <div class="hud-ping-badge">
+          <span class="ping-icon">📶</span>
+          <span id="hud-ping-val" class="ping-text">48ms</span>
+        </div>
+      </div>
+
+      <!-- Top Center: Capsule Match Timer -->
+      <div class="hud-top-center">
+        <div class="hud-timer-capsule">
+          <span id="hud-timer-text" class="timer-digits">07:45</span>
+        </div>
+      </div>
+
+      <!-- Top Right: 8-Player Leaderboard -->
+      <div class="hud-top-right">
+        <div class="hud-leaderboard-card">
+          <div id="leaderboard-rows" class="leaderboard-rows">
+            <!-- Dynamically populated 8 player rows -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Center: MY TERRITORY Card -->
+      <div class="hud-bottom-center">
+        <div class="hud-territory-card">
+          <div class="territory-card-content">
+            <div id="my-color-swatch" class="my-color-swatch"></div>
+            <div class="territory-labels">
+              <span class="territory-title">MY TERRITORY</span>
+              <span id="my-territory-pct" class="territory-pct">31.4%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Right: Action Controls (Lightning Boost) -->
+      <div class="hud-bottom-right-group">
+        <!-- Big Circular Lightning Boost Action Button -->
+        <button id="boost-btn" class="hud-boost-btn" aria-label="Boost Speed">
+          <svg class="boost-progress-svg" viewBox="0 0 100 100">
+            <circle class="boost-bg-ring" cx="50" cy="50" r="44"/>
+            <circle id="boost-meter-fill" class="boost-fill-ring" cx="50" cy="50" r="44"/>
+          </svg>
+          <div class="boost-btn-inner">
+            <svg viewBox="0 0 24 24" width="38" height="38" fill="#ffffff">
+              <path d="M7 2v11h3v9l7-12h-4l4-8H7z"/>
+            </svg>
+          </div>
+        </button>
+      </div>
+
+      <!-- Floating Feedback Popups ("Great !", "Kill !", "Dominating !") -->
+      <div id="floating-feedback-container" class="floating-feedback-container"></div>
+    </div>
+
+    <!-- Main Menu Start Screen -->
+    <div id="main-menu" class="screen-overlay hidden">
+      <div class="menu-top-bar">
+        <div class="menu-coin-badge">
+          <span class="coin-icon">🪙</span>
+          <span class="coin-val">10</span>
+        </div>
+        <div class="menu-settings-btn">⚙️</div>
+      </div>
+
+      <div class="menu-center-header">
+        <h1 class="paper-logo">TERRA<span>GRAV</span><span class="logo-badge-2">2.5D</span></h1>
+      </div>
+
+      <div class="character-stage">
+        <div class="bubble-badge bubble-left">
+          <div class="bubble-text">START <span class="highlight">x3</span> faster</div>
+          <div class="bubble-icon">🎬</div>
+        </div>
+
+        <div class="cube-showcase">
+          <canvas id="cube-preview-canvas" width="220" height="220"></canvas>
+        </div>
+
+        <div class="bubble-badge bubble-right" id="skins-trigger">
+          <div class="bubble-icon">🎨</div>
+          <div class="bubble-text">Check your new skins!</div>
+        </div>
+      </div>
+
+      <div class="menu-bottom-bar">
+        <div class="bottom-card best-score-card">
+          <div class="card-label">Best score</div>
+          <div class="card-bar-bg">
+            <div class="card-bar-fill" style="width: 35%;"></div>
+          </div>
+          <div id="menu-best-score" class="card-val">31.4%</div>
+        </div>
+
+        <button id="play-btn" class="big-play-btn" aria-label="Play Game">
+          <div class="play-btn-glow"></div>
+          <svg viewBox="0 0 24 24" width="36" height="36">
+            <path fill="#ffffff" d="M8 5v14l11-7z"/>
+          </svg>
+        </button>
+
+        <div class="bottom-card pseudo-card">
+          <div class="card-label">Player Name</div>
+          <input type="text" id="player-name-input" maxlength="12" value="Arnav" placeholder="Arnav">
+        </div>
+      </div>
+
+      <!-- Color / Skin Selector Modal -->
+      <div id="skin-modal" class="skin-modal hidden">
+        <div class="skin-modal-content">
+          <h3>SELECT ROBOT COLOR</h3>
+          <div class="color-palette" id="color-palette">
+            <button class="color-btn active" data-color="#1a73e8" style="--c: #1a73e8"></button>
+            <button class="color-btn" data-color="#4caf50" style="--c: #4caf50"></button>
+            <button class="color-btn" data-color="#ffb300" style="--c: #ffb300"></button>
+            <button class="color-btn" data-color="#e53935" style="--c: #e53935"></button>
+            <button class="color-btn" data-color="#8e24aa" style="--c: #8e24aa"></button>
+            <button class="color-btn" data-color="#00acc1" style="--c: #00acc1"></button>
+            <button class="color-btn" data-color="#e91e63" style="--c: #e91e63"></button>
+            <button class="color-btn" data-color="#fb8c00" style="--c: #fb8c00"></button>
+          </div>
+          <button id="close-skins-btn" class="modal-close-btn">DONE</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Game Over Screen -->
+    <div id="results-screen" class="screen-overlay hidden">
+      <div class="results-card-3d">
+        <div id="results-header" class="results-badge-3d">ELIMINATED</div>
+        <h2 id="results-title">MATCH FINISHED</h2>
+
+        <div class="stats-pills-grid">
+          <div class="stat-pill-box">
+            <span class="label">TERRITORY</span>
+            <span id="res-territory" class="val highlight">31.4%</span>
+          </div>
+          <div class="stat-pill-box">
+            <span class="label">RANK</span>
+            <span id="res-rank" class="val">#1 👑</span>
+          </div>
+          <div class="stat-pill-box">
+            <span class="label">KILLS</span>
+            <span id="res-kills" class="val">3</span>
+          </div>
+          <div class="stat-pill-box">
+            <span class="label">SCORE</span>
+            <span id="res-score" class="val">3890</span>
+          </div>
+        </div>
+
+        <button id="play-again-btn" class="big-play-btn restart-btn">
+          <svg viewBox="0 0 24 24" width="32" height="32">
+            <path fill="#ffffff" d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.95 20 14.54 20 13c0-4.42-3.58-8-8-8zm-6 8c0-1.01.25-1.97.7-2.8L5.24 8.74C4.46 10.05 4 11.46 4 13c0 4.42 3.58 8 8 8v4l5-5-5-5v4c-3.31 0-6-2.69-6-6z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/audio.js"></script>
+  <script src="js/particles.js"></script>
+  <script src="js/grid.js"></script>
+  <script src="js/camera.js"></script>
+  <script src="js/player.js"></script>
+  <script src="js/bot.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>
